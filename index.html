@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f5f7" />
+    <meta name="description" content="Daily Ledger 是一款轻盈、私密的个人记账与每日总结工具。" />
+    <title>Daily Ledger · 每日账本</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="主导航">
+        <div class="brand-lockup">
+          <div class="brand-mark" aria-hidden="true">D</div>
+          <div>
+            <p class="brand-name">Daily Ledger</p>
+            <p class="brand-subtitle">轻盈地记住每一笔</p>
+          </div>
+        </div>
+
+        <nav class="primary-nav">
+          <button class="nav-item is-active" data-view="overview" type="button">
+            <span class="nav-icon" aria-hidden="true">⌂</span>
+            <span>概览</span>
+          </button>
+          <button class="nav-item" data-view="ledger" type="button">
+            <span class="nav-icon" aria-hidden="true">▤</span>
+            <span>账单</span>
+          </button>
+          <button class="nav-item" data-view="insights" type="button">
+            <span class="nav-icon" aria-hidden="true">◒</span>
+            <span>分析</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-spacer"></div>
+
+        <div class="month-card">
+          <div class="month-card-header">
+            <span>本月预算</span>
+            <span class="month-card-icon" aria-hidden="true">◔</span>
+          </div>
+          <strong id="month-budget-remaining">¥0</strong>
+          <div class="progress-track" aria-label="本月预算使用比例">
+            <span id="month-budget-progress"></span>
+          </div>
+          <p id="month-budget-caption">剩余可用预算</p>
+        </div>
+
+        <div class="sidebar-footer">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>数据仅保存在本机</span>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div class="date-switcher" aria-label="切换日期">
+            <button class="icon-button" id="previous-day" type="button" aria-label="前一天" title="前一天">‹</button>
+            <div>
+              <p class="eyebrow">个人财务空间</p>
+              <button class="date-button" id="selected-date-button" type="button">今天</button>
+            </div>
+            <button class="icon-button" id="next-day" type="button" aria-label="后一天" title="后一天">›</button>
+          </div>
+          <div class="topbar-actions">
+            <button class="notification-button" id="notification-button" type="button">
+              <span class="notification-icon" aria-hidden="true">⌁</span>
+              <span>开启每日推送</span>
+            </button>
+            <button class="primary-button" id="add-transaction-button" type="button">
+              <span aria-hidden="true">＋</span>
+              <span>记一笔</span>
+            </button>
+          </div>
+        </header>
+
+        <section class="welcome-block" aria-labelledby="page-title">
+          <div>
+            <p class="eyebrow accent-eyebrow" id="welcome-date">2026年7月25日 星期六</p>
+            <h1 id="page-title">今天，花得明白。</h1>
+            <p class="welcome-copy" id="welcome-copy">你的每一笔都已被温柔地整理好。</p>
+          </div>
+          <div class="day-chip">
+            <span class="day-chip-icon" aria-hidden="true">✦</span>
+            <span id="day-chip-label">今日状态良好</span>
+          </div>
+        </section>
+
+        <section class="stats-grid" aria-label="今日统计">
+          <article class="stat-card stat-card-featured">
+            <div class="stat-label-row">
+              <span>今日支出</span>
+              <span class="stat-symbol coral" aria-hidden="true">↘</span>
+            </div>
+            <strong class="stat-value" id="today-expense">¥0.00</strong>
+            <p class="stat-footnote" id="expense-comparison">较昨日 —</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat-label-row">
+              <span>今日收入</span>
+              <span class="stat-symbol mint" aria-hidden="true">↗</span>
+            </div>
+            <strong class="stat-value" id="today-income">¥0.00</strong>
+            <p class="stat-footnote">已记录的收入</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat-label-row">
+              <span>本月支出</span>
+              <span class="stat-symbol blue" aria-hidden="true">◷</span>
+            </div>
+            <strong class="stat-value" id="month-expense">¥0.00</strong>
+            <p class="stat-footnote" id="month-transaction-count">0 笔交易</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat-label-row">
+              <span>本月日均</span>
+              <span class="stat-symbol violet" aria-hidden="true">≈</span>
+            </div>
+            <strong class="stat-value" id="month-average">¥0.00</strong>
+            <p class="stat-footnote">按有记录的天数计算</p>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <article class="panel transactions-panel" id="transactions-panel">
+            <div class="panel-header">
+              <div>
+                <p class="section-kicker">流水记录</p>
+                <h2 id="transactions-title">今日账单</h2>
+              </div>
+              <button class="text-button" id="clear-filter-button" type="button">查看全部 <span aria-hidden="true">→</span></button>
+            </div>
+            <div class="transaction-list" id="transaction-list"></div>
+          </article>
+
+          <aside class="summary-column" id="insights-panel">
+            <article class="panel digest-panel">
+              <div class="digest-orbit" aria-hidden="true"><span>✦</span></div>
+              <p class="section-kicker">每日整理</p>
+              <h2 id="digest-title">今天的账单已整理</h2>
+              <p id="digest-copy">记录每一笔，才能看见生活真正的流向。</p>
+              <div class="digest-divider"></div>
+              <div class="digest-row">
+                <span>今日共计</span>
+                <strong id="digest-total">¥0.00</strong>
+              </div>
+              <div class="digest-row">
+                <span>最大支出</span>
+                <strong id="digest-largest">暂无</strong>
+              </div>
+              <button class="secondary-button" id="digest-notification-button" type="button">
+                <span aria-hidden="true">⌁</span>
+                <span>开启每日提醒</span>
+              </button>
+            </article>
+
+            <article class="panel category-panel">
+              <div class="panel-header compact-header">
+                <div>
+                  <p class="section-kicker">花费去向</p>
+                  <h2>分类概览</h2>
+                </div>
+                <span class="month-label">本月</span>
+              </div>
+              <div class="category-list" id="category-list"></div>
+            </article>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal-backdrop" id="transaction-modal" hidden>
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-header">
+          <div>
+            <p class="section-kicker">新建记录</p>
+            <h2 id="modal-title">记一笔</h2>
+          </div>
+          <button class="icon-button close-button" id="close-modal-button" type="button" aria-label="关闭" title="关闭">×</button>
+        </div>
+        <form id="transaction-form">
+          <div class="segmented-control" role="group" aria-label="记录类型">
+            <label class="segment is-selected"><input type="radio" name="type" value="expense" checked />支出</label>
+            <label class="segment"><input type="radio" name="type" value="income" />收入</label>
+          </div>
+          <label class="amount-field">
+            <span>金额</span>
+            <div class="amount-input-wrap"><span>¥</span><input id="amount-input" name="amount" type="number" min="0.01" step="0.01" placeholder="0.00" required /></div>
+          </label>
+          <div class="form-row">
+            <label>
+              <span>名称</span>
+              <input name="title" type="text" maxlength="30" placeholder="例如：午餐" required />
+            </label>
+            <label>
+              <span>分类</span>
+              <select name="category" id="category-input">
+                <option value="餐饮">餐饮</option>
+                <option value="交通">交通</option>
+                <option value="购物">购物</option>
+                <option value="居住">居住</option>
+                <option value="娱乐">娱乐</option>
+                <option value="健康">健康</option>
+                <option value="其他">其他</option>
+              </select>
+            </label>
+          </div>
+          <label>
+            <span>日期</span>
+            <input name="date" id="date-input" type="date" required />
+          </label>
+          <label>
+            <span>备注 <em>可选</em></span>
+            <textarea name="note" rows="2" maxlength="80" placeholder="为这笔记录留下一点上下文"></textarea>
+          </label>
+          <div class="modal-actions">
+            <button class="secondary-button" id="cancel-modal-button" type="button">取消</button>
+            <button class="primary-button" type="submit">保存记录 <span aria-hidden="true">→</span></button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
